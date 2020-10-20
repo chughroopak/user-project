@@ -85,13 +85,11 @@ class CreateUser extends Component {
 	render() {
 		const { name, email, mobile, category, errors } = this.state;
 		return (
-			<div>
+			<div className='container'>
+				<h3 className='display-3 text-center'>Create User</h3>
 				<div className='row'>
-					<div className='col col-md-8 mx-auto'>
+					<div className='col col-md-8 mx-auto mt-3'>
 						<div className='card'>
-							<div className='card-header'>
-								<h1>Create User</h1>
-							</div>
 							<div className='card-body'>
 								<form onSubmit={this.onSubmit}>
 									<TextInputGroup

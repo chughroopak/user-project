@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
+import { firestoreConnect } from 'react-redux-firebase';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import $, { contains } from 'jquery';
 
 class PreviewModal extends Component {
-	constructor() {
-		super();
-		this.state = {
-			name: '',
-			gender: '',
-			category: '',
-			technology: '',
-			mobile: '',
-			email: ''
-		};
-	}
+	state = {
+		name: '',
+		gender: '',
+		category: '',
+		technology: [],
+		mobile: '',
+		email: ''
+	};
 
 	componentWillUnmount() {
 		window.$('#previewModal').modal('hide');
@@ -41,9 +39,9 @@ class PreviewModal extends Component {
 		if (
 			technology &&
 			technology.length !== 0 &&
-			technology.join(', ') !== this.state.technology
+			technology.length !== this.state.technology.length
 		) {
-			this.setState({ technology: technology.join(', ') });
+			this.setState({ technology });
 		}
 
 		if (prevProps.gender !== gender) {
@@ -53,27 +51,20 @@ class PreviewModal extends Component {
 			this.setState({ mobile });
 		}
 	}
-	// static getDerivedStateFromProps(props, state) {
-	// 	const { name, gender, category, technology, mobile, email } = props;
-	// 	if (
-	// 		name &&
-	// 		gender &&
-	// 		category &&
-	// 		technology &&
-	// 		technology.length !== 0 &&
-	// 		mobile &&
-	// 		email
-	// 	)
-	// 		return {
-	// 			name,
-	// 			gender,
-	// 			category,
-	// 			mobile,
-	// 			email,
-	// 			technology: technology.join(', ')
-	// 		};
-	// 	else return state;
-	// }
+
+	onSubmit = e => {
+		e.preventDefault();
+
+		const newUser = this.state;
+
+		const { firestore, history } = this.props;
+
+		firestore.add({ collection: 'users' }, newUser).then(() => {
+			history.push('/');
+			alert('User Created Successfully!');
+		});
+	};
+
 	render() {
 		const { name, gender, category, technology, mobile, email } = this.state;
 		console.log();
@@ -117,7 +108,7 @@ class PreviewModal extends Component {
 									<strong>Category</strong>: {category}
 								</li>
 								<li className='list-group-item'>
-									<strong>Technology</strong>: {technology}
+									<strong>Technology</strong>: {technology.join(', ')}
 								</li>
 							</ul>
 						</div>
@@ -128,7 +119,10 @@ class PreviewModal extends Component {
 								data-dismiss='modal'>
 								Close
 							</button>
-							<button type='button' className='btn btn-primary'>
+							<button
+								type='button'
+								className='btn btn-primary'
+								onClick={this.onSubmit}>
 								Save changes
 							</button>
 						</div>
@@ -140,6 +134,7 @@ class PreviewModal extends Component {
 }
 
 PreviewModal.propTypes = {
+	firestore: PropTypes.object.isRequired,
 	name: PropTypes.string,
 	technology: PropTypes.array,
 	category: PropTypes.string,
@@ -148,4 +143,4 @@ PreviewModal.propTypes = {
 	mobile: PropTypes.string
 };
 
-export default PreviewModal;
+export default firestoreConnect()(withRouter(PreviewModal));

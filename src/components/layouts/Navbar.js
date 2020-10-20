@@ -24,9 +24,9 @@ export default function Navbar() {
 						className='collapse navbar-collapse '
 						id='navbarSupportedContent'>
 						<ul className='navbar-nav mr-auto'>
-							<li className='nav-item active'>
+							<li className='nav-item'>
 								<Link className='nav-link' to='/users/create'>
-									Create User <span className='sr-only'>(current)</span>
+									Create User
 								</Link>
 							</li>
 							<li className='nav-item'>
